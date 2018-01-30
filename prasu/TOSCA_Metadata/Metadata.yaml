@@ -1,0 +1,17 @@
+name: NSD
+nfvo_version: 4.0.0
+image:
+    upload: check
+    names:
+        - ubuntu-16
+    link: https://cloud-images.ubuntu.com/releases/16.04/release/ubuntu-16.04-server-cloudimg-arm64-disk1.img
+image-config:
+    name: ubuntu-16
+    diskFormat: qcow2
+    containerFormat: bare
+    minCPU: 0
+    minDisk: 0
+    minRam: 0
+    isPublic: true
+vim_types:
+    - openstack
