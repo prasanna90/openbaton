@@ -12,7 +12,7 @@ def sample():
         print "the directory got created"
     os.chdir(path)
     with open("vmtest.txt", 'w') as f:
-        f.write "hello world\n Welcome to VM test file"
+        f.write("hello world\n Welcome to VM test file")
 
 sample()
 
