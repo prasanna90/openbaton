@@ -1,6 +1,4 @@
 #!/bin/bash
 
-file:'/etc/ansible/ansible.cfg'
-
-sed -i '/^#.* roles_path /s/^#//' file
+sed -i 's/#roles_path/roles_path/g' /etc/ansible/ansible.cfg
 
