@@ -8,6 +8,6 @@ def main():
     print out1
     cwddir = os.getcwd()
     path = r"/etc/hosts"
-    with open(path, "w+") as f:
+    with open(path, "a") as f:
         f.write("172.19.77.161" + "\t" + out1)
 main()
