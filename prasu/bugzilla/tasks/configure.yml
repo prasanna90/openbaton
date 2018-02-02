@@ -1,0 +1,13 @@
+---
+#Configuring httpd.conf and sending sample html file
+ - name: Edit the configuration file
+   blockinfile:
+    dest: /etc/httpd/conf.d/bugzilla.conf
+    content: "<VirtualHost *:80>\nDocumentRoot /var/www/html/bugzilla/\n</VirtualHost>\n<Directory /var/www/html/bugzilla>\nAddHandler cgi-script .cgi\nOptions +Indexes +ExecCGI\n
+      DirectoryIndex index.cgi\n
+      AllowOverride Limit FileInfo Indexes\n
+      </Directory>"
+ - name: restart apache service
+   service: name=httpd state=restarted
+   notify:
+      restart apache service

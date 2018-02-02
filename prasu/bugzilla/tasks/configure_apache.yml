@@ -1,0 +1,13 @@
+---
+#Configuring the apache
+ - name: Configuring the apache
+   copy:
+    dest: /etc/apache2/sites-available/bugzilla.conf
+    content: "ServerName localhost\n\n<Directory /var/www/html/bugzilla>\nAddHandler cgi-script .cgi\nOptions +ExecCGI\nDirectoryIndex index.cgi index.html\nAllowOverride All\n</Directory>"
+ - name: configure apache to bugzilla
+   command: chdir=/var/www/html/bugzilla/ a2ensite bugzilla
+ - name: configure cgi expires
+   command: chdir=/var/www/html/bugzilla/ a2enmod cgi headers expires
+ - name: restart apache2 service
+   command: chdir=/var/www/html/bugzilla/ service apache2 restart
+
