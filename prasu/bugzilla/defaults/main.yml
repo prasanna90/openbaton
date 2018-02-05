@@ -1,2 +1,5 @@
 ---
 # defaults file for bugzilla
+
+Mysql_root_password: abc123
+mail_configuration: no configuration

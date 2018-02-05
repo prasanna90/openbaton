@@ -7,4 +7,5 @@ FILE="/etc/ansible/hosts"
 [myservers]
 
 172.19.77.161
+172.19.77.162
 EOT

@@ -4,10 +4,6 @@
    apt: 
     name: apache2
     state: latest
- - name: install mysql server
-   apt:
-    name: mysql-server
-    state: latest
  - name: install libapache2
    apt:
     name: libapache2-mod-perl2
@@ -28,7 +24,7 @@
    apt:
     name: postfix
     state: latest
-  - name: install make
+ - name: install make
    apt:
     name: make
     state: latest

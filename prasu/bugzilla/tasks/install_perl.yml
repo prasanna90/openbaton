@@ -4,3 +4,5 @@
    command: chdir=/var/www/html/bugzilla/ ls
  - name: Installing all the perl modules
    command: chdir=/var/www/html/bugzilla/ /usr/bin/perl install-module.pl --all
+ - name: Installing db mysql
+   command: chdir=/var/www/html/bugzilla/ /usr/bin/perl install-module.pl DBD::mysql

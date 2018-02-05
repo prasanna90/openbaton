@@ -1,9 +1,25 @@
 ---
-#Editing local config file
- - name: Edit local config file 
-   copy:
-    dest: /var/www/html/bugzilla/localconfig
-    content: "$db_host = 'localhost';\n$db_name = 'bugzilla';\n$db_user = 'bugs';\n$db_pass = 'password';"
+#Editiing local config file
+ - name: go to the directory
+   command: chdir=/var/www/html/bugzilla/ ls
+ - name: edit the localconfig file
+   lineinfile: 
+    dest: "/var/www/html/bugzilla/localconfig"
+    state: "present"
+    regexp: "^$webservergroup ="
+    line: "$webservergroup = 'www-data';"
+    backrefs: yes 
+ - name: lineinfile in localconfig file
+   lineinfile:
+     dest: "/var/www/html/bugzilla/localconfig"
+     state: "present"
+     regexp: "^$db_pass ="
+     line: "$db_pass = 'abc123';"
+     backrefs: yes
+# - name: configure database
+#   mysql_db: 
+#     name: "{{ mysql_db_email }}"
+#     password: "{{ mysql_db_password }}"
  - name: runs a perl script
    command: chdir=/var/www/html/bugzilla/ ./checksetup.pl
 
