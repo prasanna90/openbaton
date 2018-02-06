@@ -28,6 +28,7 @@ topology_template:
             INSTANTIATE:
                - prasu/Scripts/sample.py
                - prasu/Scripts/hostname.py
+               - prasu/Scripts/rootenable.sh
                - prasu/Scripts/install_ansible.sh
                - prasu/Scripts/configure.sh
                - prasu/Scripts/configure_role.sh
