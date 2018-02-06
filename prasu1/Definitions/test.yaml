@@ -1,0 +1,94 @@
+tosca_definitions_version: tosca_simple_profile_for_nfv_1_0
+description: Example of NSD
+
+metadata:
+  ID: NSDExample
+  vendor: Fokus
+  version: 1.0
+
+topology_template:
+  node_templates:
+
+    iperf-server: #VNF1
+        type: openbaton.type.VNF
+        properties:
+          vendor: Fokus
+          version: 1.0
+          endpoint: generic
+          type: server
+#          vnfPackageLocation: https://github.com/openbaton/vnf-scripts.git
+          deploymentFlavour:
+            - flavour_key: m1.small
+        requirements:
+          - virtualLink: internal
+          - vdu: VDU2
+        interfaces:
+          lifecycle: # lifecycle
+
+    iperf-client:
+        type: openbaton.type.VNF
+        properties:
+          ID: x
+          vendor: Fokus
+          version: 1.0
+          type: client
+#          vnfPackageLocation: https://github.com/openbaton/vnf-scripts.git
+          deploymentFlavour:
+            - flavour_key: m1.small
+          endpoint: generic
+        requirements:
+            - virtualLink: internal
+            - vdu: VDU1
+        interfaces:
+          lifecycle: # lifecycle
+
+    VDU1:
+        type: tosca.nodes.nfv.VDU
+        properties:
+          scale_in_out: 1
+          vim_instance_name:
+            - tosca
+        requirements:
+            - virtual_link: CP1
+        artifacts:
+          VDU1Image:
+            type: tosca.artifacts.Deployment.Image.VM
+            file: ubuntu-16
+
+    VDU2:
+        type: tosca.nodes.nfv.VDU
+        properties:
+          scale_in_out: 3
+          vim_instance_name:
+            - tosca
+        requirements:
+            - virtual_link: CP2
+        artifacts:
+          VDU2Image:
+            type: tosca.artifacts.Deployment.Image.VM
+            file: ubuntu-16
+
+    CP1:
+        type: tosca.nodes.nfv.CP
+        requirements:
+          - virtualBinding: VDU1
+          - virtualLink: internal
+
+    CP2: 
+        type: tosca.nodes.nfv.CP
+        requirements:
+          - virtualBinding: VDU2
+          - virtualLink: internal
+
+    internal:
+        type: tosca.nodes.nfv.VL
+        properties:
+          vendor: Fokus
+
+relationships_template:
+  connection_server_client:
+    type: tosca.nodes.relationships.ConnectsTo
+    source: iperf-server
+    target: iperf-client
+    parameters:
+        - internal

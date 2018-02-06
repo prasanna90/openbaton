@@ -1,8 +1,21 @@
 ---
 #Installing the perl modules which are required
- - name: go to bugzilla directory
-   command: chdir=/var/www/html/bugzilla/ ls
- - name: Installing all the perl modules
-   command: chdir=/var/www/html/bugzilla/ /usr/bin/perl install-module.pl --all
- - name: Installing db mysql
-   command: chdir=/var/www/html/bugzilla/ /usr/bin/perl install-module.pl DBD::mysql
+ - block:
+    - name: go to bugzilla directory
+      command: chdir=/var/www/html/bugzilla/ ls
+      register: r1
+    - name: Installing all the perl modules
+      command: chdir=/var/www/html/bugzilla/ /usr/bin/perl install-module.pl --all
+      register: r2
+      retries: 3
+      delay: 1
+      until:  r2.status == '404'
+    - name: Installing db mysql
+      command: chdir=/var/www/html/bugzilla/ /usr/bin/perl install-module.pl DBD::mysql
+      register: r3
+      retries: 2
+      delay: 1
+      until: r3.status == '404'
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed

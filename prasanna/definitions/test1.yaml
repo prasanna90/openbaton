@@ -1,0 +1,47 @@
+tosca_definitions_version: tosca_1.0
+description: Example of NS Template to deploy vm
+
+metadata:
+  ID: NsdTest
+  vendor: test
+  version: 1.0
+
+topology_template:
+
+  node_templates:
+
+    dummy-server:
+      type: openbaton.type.VNF
+      properties:
+        vendor: test
+        version: 1.0
+        endpoint: generic
+        type: server
+        deploymentFlavour:
+          - flavour_key: m1.small
+      requirements:
+        - vdu: VDU1
+
+
+    VDU1:
+      type: tosca.nodes.nfv.VDU
+      properties:
+        scale_in_out: 1
+        vim_instance_name:
+              - test
+      artifacts:
+        type: tosca.artifacts.Deployment.Image.VM
+        file: cirros
+
+    CP1:
+      type: tosca.nodes.nfv.CP
+      properties:
+        floatingIP: random
+      requirements:
+          - virtualBinding: VDU1
+          - virtualLink: internal
+
+    internal:
+      type: tosca.nodes.nfv.VL
+      properties:
+        vendor: test

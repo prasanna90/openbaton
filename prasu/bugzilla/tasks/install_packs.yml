@@ -1,42 +1,12 @@
 ---
 #Installing dependency packages for bugzilla
- - name: install apache package
-   apt: 
-    name: apache2
-    state: latest
- - name: install libapache2
-   apt:
-    name: libapache2-mod-perl2
-    state: latest
- - name: install libapache2 dev
-   apt:
-    name: libapache2-mod-perl2-dev
-    state: latest
- - name: install libapache2 doc
-   apt:
-    name: libapache2-mod-perl2-doc
-    state: latest
- - name: install perl
-   apt:
-    name: perl
-    state: latest
- - name: install postfix
-   apt:
-    name: postfix
-    state: latest
- - name: install make
-   apt:
-    name: make
-    state: latest
- - name: install gcc
-   apt:
-    name: gcc
-    state: latest
- - name: install g++
-   apt:
-    name: g++
-    state: latest
- - name: install libcgi
-   apt:
-    name: libcgi-pm-perl
-    state: latest
+ - block:
+   - name: Install all dependency packages
+     apt: name={{ item }} state=installed
+     with_items:
+       - "{{ bugz_pkgs }}"
+     register: r1
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed
+ 

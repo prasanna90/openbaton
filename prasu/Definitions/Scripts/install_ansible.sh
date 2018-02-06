@@ -4,6 +4,5 @@
 
 sudo apt-get update 
 
-yes Y | sudo apt-get install ansible && sudo apt-get install expect
+yes Y | sudo apt-get install ansible
 sudo apt-get install sshpass
-

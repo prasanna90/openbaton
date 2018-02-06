@@ -1,0 +1,9 @@
+---
+#configuring the MySQL 
+ - name: configure the MySQL 
+   copy:
+    dest: /etc/mysql/my.cnf
+    content: "!ft_min_word_len=2\n!max_allowed_packet=100M"
+ - name: Add a user for MySQL
+   command: chdir=/var/www/html/ mysql -u root -p -e "GRANT ALL PRIVILEGES ON bugs.* TO bugs@localhost IDENTIFIED BY 'abc123'"
+

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+unset OB_NFVO_IP
+unset OB_NFVO_PORT
+unset OB_PROJECT_ID
+unset OB_USERNAME
+unset OB_PASSWORD
+
+export OB_NFVO_IP=172.19.77.115
+export OB_NFVO_PORT=8080
+export OB_PROJECT_ID=952a65fb-bd71-46ec-910a-5597796dfcc0
+export OB_USERNAME=admin
+echo -n Insert Open Baton Password: 
+read -s password
+export OB_PASSWORD=$password

@@ -1,25 +1,42 @@
 ---
 #Editiing local config file
- - name: go to the directory
-   command: chdir=/var/www/html/bugzilla/ ls
- - name: edit the localconfig file
-   lineinfile: 
-    dest: "/var/www/html/bugzilla/localconfig"
-    state: "present"
-    regexp: "^$webservergroup ="
-    line: "$webservergroup = 'www-data';"
-    backrefs: yes 
- - name: lineinfile in localconfig file
-   lineinfile:
-     dest: "/var/www/html/bugzilla/localconfig"
-     state: "present"
-     regexp: "^$db_pass ="
-     line: "$db_pass = 'abc123';"
-     backrefs: yes
-# - name: configure database
-#   mysql_db: 
-#     name: "{{ mysql_db_email }}"
-#     password: "{{ mysql_db_password }}"
  - name: runs a perl script
    command: chdir=/var/www/html/bugzilla/ ./checksetup.pl
+   ignore_errors: yes
+ - block:
+    - name: go to the directory
+      command: chdir=/var/www/html/bugzilla/ ls
+      register: r1
+    - name: edit the localconfig file
+#      command: chdir=/var/www/html/bugzilla/ sed -i 's/$webservergroup = 'apache';/$webservergroup = 'www-data';/g' /var/www/html/bugzilla/localconfig
+      lineinfile: 
+       dest: "/var/www/html/bugzilla/localconfig"
+       state: "present"
+       regexp: "^$webservergroup ="
+       line: "$webservergroup = 'www-data';"
+       backrefs: yes 
+      register: r2
+      retries: 3
+      delay: 1
+      until: r2.status == '404'
+    - name: lineinfile in localconfig file
+      lineinfile:
+       dest: "/var/www/html/bugzilla/localconfig"
+       state: "present"
+       regexp: "^$db_pass ="
+       line: "$db_pass = 'abc123';"
+       backrefs: yes
+      register: r3
+      retries: 3
+      delay: 1
+      until: r3.status == '404'
+    - name: runs a perl script
+      command: chdir=/var/www/html/bugzilla/ ./checksetup.pl
+      register: r4
+      retries: 3
+      delay: 1
+      until: r4.status == '404'
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed
 

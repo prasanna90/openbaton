@@ -1,0 +1,40 @@
+tosca_definitions_version: tosca_simple_profile_for_nfv_1_0
+description: Example of VNFD Template
+
+metadata:
+  ID: Dummy
+  vendor: test
+  version: 1.0
+
+inputs:
+  deploymentFlavour:
+    - flavour_key: m1.small
+  endpoint: generic
+  type: server
+
+topology_template:
+
+  node_templates:
+
+    vdu1:
+      type: tosca.nodes.nfv.VDU
+      properties:
+        scale_in_out: 1
+        vim_instance_name:
+         - test_tosca
+      artifacts:
+        VDU1Image:
+          type: tosca.artifacts.Deployment.Image.VM
+          file: cirros
+
+    cp1:
+      type: tosca.nodes.nfv.CP
+      requirements:
+        - virtualBinding: vdu1
+        - virtualLink: internal
+
+    internal:
+      type: tosca.nodes.nfv.VL
+      properties:
+        vendor: test
+

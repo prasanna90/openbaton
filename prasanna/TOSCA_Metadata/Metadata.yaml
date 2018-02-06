@@ -1,0 +1,7 @@
+name: vmInstance
+image:
+    upload: false
+    names:
+        - cirros
+vim_types:
+    - openstack

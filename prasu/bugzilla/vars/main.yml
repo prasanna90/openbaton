@@ -8,3 +8,16 @@ mysql_pkgs:
   - python-selinux
   - mysql-server
   - python-mysqldb
+
+bugz_pkgs:
+  - apache2
+  - libapache2-mod-perl2
+  - libapache2-mod-perl2-dev
+  - libapache2-mod-perl2-doc
+  - perl
+  - postfix
+  - make
+  - gcc
+  - g++
+  - libcgi-pm-perl
+

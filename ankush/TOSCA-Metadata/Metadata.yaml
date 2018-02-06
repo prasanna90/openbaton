@@ -1,0 +1,10 @@
+name: vmInstance
+description: description_of_test
+provider: test
+nfvo_version: 4.0.0 
+image:
+    upload: false
+    names:
+       - cirros
+vim_types:
+    - openstack

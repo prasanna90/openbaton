@@ -1,5 +1,5 @@
 ---
- - hosts: 172.19.77.161
+ - hosts: 172.19.77.162
    vars:
      mysql_root_password: abc123
      mysql_db_email: lakshmiprasanna268@gmail.com
