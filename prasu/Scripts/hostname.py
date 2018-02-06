@@ -11,6 +11,6 @@ def main():
     try:
         with open(path, "a") as f:
             f.write("172.19.77.161" + "\t" + out1)
-    expect Exception as e:
+    except Exception as e:
         print "error occured:", e
 main()
