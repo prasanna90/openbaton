@@ -1,7 +1,8 @@
 import os
-
+import time
 
 def sample():
+    time.sleep(500)
     cwddir = os.getcwd()
     #path = r"C:\Users\GURC4657\Desktop\ppp"
     path = r"Sampletest"
