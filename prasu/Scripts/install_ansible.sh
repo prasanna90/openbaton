@@ -9,5 +9,5 @@ sudo apt-get install expect
 sudo apt-get install sshpass
 
 
-#expect rootuser.sh
+expect rootuser.sh
 #expect ssh.sh
