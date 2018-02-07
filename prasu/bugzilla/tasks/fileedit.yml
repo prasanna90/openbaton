@@ -1,14 +1,13 @@
 ---
 #Editiing local config file
  - name: runs a perl script
-   command: chdir=/var/www/html/bugzilla/ ./checksetup.pl
+   command: chdir=/var/www/html/bugzilla ./checksetup.pl
    ignore_errors: yes
  - block:
     - name: go to the directory
       command: chdir=/var/www/html/bugzilla/ ls
       register: r1
     - name: edit the localconfig file
-#      command: chdir=/var/www/html/bugzilla/ sed -i 's/$webservergroup = 'apache';/$webservergroup = 'www-data';/g' /var/www/html/bugzilla/localconfig
       lineinfile: 
        dest: "/var/www/html/bugzilla/localconfig"
        state: "present"
@@ -18,7 +17,7 @@
       register: r2
       retries: 3
       delay: 1
-      until: r2.status == '404'
+      until: not r2| success
     - name: lineinfile in localconfig file
       lineinfile:
        dest: "/var/www/html/bugzilla/localconfig"
@@ -29,14 +28,27 @@
       register: r3
       retries: 3
       delay: 1
-      until: r3.status == '404'
+      until: not r3| success
     - name: runs a perl script
-      command: chdir=/var/www/html/bugzilla/ ./checksetup.pl
+      command: chdir=/var/www/html/bugzilla ./checksetup.pl
       register: r4
       retries: 3
       delay: 1
-      until: r4.status == '404'
+      until: not r4| success
+      ignore_errors: yes
+    - name: runs a dbd module
+      command: chdir=/var/www/html/bugzilla /usr/bin/perl install-module.pl DBD::mysql
+      register : r5
+      retries: 2
+      delay: 1
+      until: not r5| success
+    - name: install the client
+      command: chdir=/var/www/html/bugzilla apt-get install libmysqlclient-dev 
+      register: r6
+    - name: runs a perl script
+      command: chdir=/var/www/html/bugzilla ./checksetup.pl
+      register: r7
  - name: Test previous block
    fail: msg="Previous block failed"
-   when: r1|failed or r2|failed or r3|failed or r4|failed
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed
 

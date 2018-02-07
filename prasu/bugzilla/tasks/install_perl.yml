@@ -9,13 +9,13 @@
       register: r2
       retries: 3
       delay: 1
-      until:  r2.status == '404'
+      until:  not r2| success
     - name: Installing db mysql
       command: chdir=/var/www/html/bugzilla/ /usr/bin/perl install-module.pl DBD::mysql
       register: r3
       retries: 2
       delay: 1
-      until: r3.status == '404'
+      until: r3.rc !=0
  - name: Test previous block
    fail: msg="Previous block failed"
    when: r1|failed or r2|failed or r3|failed

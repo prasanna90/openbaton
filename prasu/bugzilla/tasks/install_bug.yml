@@ -1,10 +1,20 @@
 ---
 #Downloading Bugzillapackage
  - block:
-    - name: Download bugzilla
-      command: chdir=/var/www/html/ git clone --branch release-5.0-stable https://github.com/bugzilla/bugzilla bugzilla
+    - name: download bugzilla
+      get_url:
+       url: http://ftp.mozilla.org/pub/webtools/bugzilla-5.0.tar.gz
+       dest: /root
       register: r1
+    - name: Extract a tar file that is downloaded in remote machine
+      unarchive:
+       src: /root/bugzilla-5.0.tar.gz
+       dest: /root
+      register: r2
+    - name: Move extracted directory to apache directory
+      command: mv /root/bugzilla-5.0 /var/www/html/bugzilla
+      register: r3
  - name: Test previous block
    fail: msg="Previous block failed"
-   when: r1|failed
+   when: r1|failed or r2|failed or r3|failed
  
