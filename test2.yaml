@@ -28,10 +28,13 @@ topology_template:
             INSTANTIATE:
                - prasu/Scripts/sample.py
                - prasu/Scripts/hostname.py
-               - prasu/Scripts/rootenable.sh
                - prasu/Scripts/install_ansible.sh
+               - prasu/Scripts/rootenable.sh
+               - prasu/Scripts/rootuser.py
+               - prasu/Scripts/ssh.py
                - prasu/Scripts/configure.sh
                - prasu/Scripts/configure_role.sh
+               - prasu/Scripts/playbook.py
 
     VDU2:
       type: tosca.nodes.nfv.VDU
