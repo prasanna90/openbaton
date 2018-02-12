@@ -2,12 +2,17 @@
 import os
 import paramiko
 import time
+import subprocess
 
 def playbook():
+    proc = subprocess.Popen("hostname -i".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out1, err1 = proc.communicate()
+    print out1
+    out1 = host
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect("172.19.77.161", username="root", password="abc123", port=22)
+        ssh.connect(host, username="root", password="abc123", port=22)
         channel = ssh.invoke_shell()
         out = channel.recv(9999)
         channel.send("cd /etc/ansible\n")
@@ -26,7 +31,7 @@ def playbook():
             time.sleep(3)
         out = channel.recv(9999)
         print(out.decode("ascii"))
-        channel.send("ansible 172.19.77.161 -m ping -u root -k\n")
+        channel.send("ansible" + " " + host + " " + "-m ping -u root -k\n")
         while not channel.recv_ready():
             time.sleep(3)
         out = channel.recv(9999)
