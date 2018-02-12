@@ -8,7 +8,7 @@ def playbook():
     proc = subprocess.Popen("hostname -i".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out1, err1 = proc.communicate()
     print out1
-    out1 = host
+    host = out1
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())

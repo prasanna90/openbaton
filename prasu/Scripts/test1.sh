@@ -1,5 +1,5 @@
 #!/bin/bash
 
-expect ssh.sh
-
-
+OUTPUT="$(hostname -i)"
+echo "${OUTPUT}"
+expect -f ssh.sh ${OUTPUT}
