@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #yes Y | sudo apt-add-repository ppa:ansible/ansible
-
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6494C6D6997C215E
 sudo apt-get update 
 
 yes Y | sudo apt-get install ansible 
