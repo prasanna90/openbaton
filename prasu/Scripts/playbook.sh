@@ -1,6 +1,6 @@
 #!/usr/bin/expect -f
 
-
+cd /etc/ansible
 set IP   [lindex $argv 0];
 spawn ansible $IP -m ping -u root -k
 expect "SSH password:"

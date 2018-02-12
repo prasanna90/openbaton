@@ -13,7 +13,7 @@ def main():
     path = r"/etc/hosts"
     try:
         with open(path, "a") as f:
-            f.write(out2 + "\t" + out1)
+            f.write(out2.strip()+"\t"+ out1.strip())
     except Exception as e:
         print "error occured:", e
 main()
