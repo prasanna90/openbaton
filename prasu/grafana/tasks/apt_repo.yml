@@ -17,15 +17,14 @@
       apt_repository:
         repo: "deb https://packagecloud.io/grafana/stable/debian/ jessien main"
         state: present
-      become: yes
+      retries: 2
+      delay: 1
       register: r3
-    - name: Update Apt repositories
-      apt: 
-         update_cache: yes
-      register: r4
+      until: not r3| success
+      become: yes
     - name: Install grafana
       apt: name=grafana state=installed
-      register: r5
+      register: r4
  - name: Test previous block
    fail: msg="Previous block failed"
-   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed
+   when: r1|failed or r2|failed or r3|failed or r4|failed
