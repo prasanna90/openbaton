@@ -42,13 +42,21 @@
       retries: 2
       delay: 1
       until: not r5| success
-    - name: install the client
-      command: chdir=/var/www/html/bugzilla apt-get install libmysqlclient-dev 
-      register: r6
     - name: runs a perl script
       command: chdir=/var/www/html/bugzilla ./checksetup.pl
+      register: r6
+      ignore_errors: yes
+    - name: install the client
+      command: chdir=/var/www/html/bugzilla apt-get install libmysqlclient-dev 
+      when: r6|failed
       register: r7
+      retries: 2
+      delay: 1
+      until: not r7| success
+    - name: runs a perl script
+      command: chdir=/var/www/html/bugzilla ./checksetup.pl
+      register: r8
  - name: Test previous block
    fail: msg="Previous block failed"
-   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed or r8|failed
 
