@@ -34,7 +34,7 @@ topology_template:
                - prasu/Scripts/test1.sh
                - prasu/Scripts/configure.sh
                - prasu/Scripts/configure_role.sh
-               - prasu/Scripts/play.py
+              # - prasu/Scripts/play.py
 
     VDU2:
       type: tosca.nodes.nfv.VDU
