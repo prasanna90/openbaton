@@ -1,5 +1,5 @@
 #!/bin/bash
 
 sudo apt-get install expect
-expect -f rootuser.sh
+sudo expect -f rootuser.sh
 
