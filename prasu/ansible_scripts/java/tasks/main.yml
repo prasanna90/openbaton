@@ -1,0 +1,3 @@
+---
+# tasks file for java
+ - include: install_java.yml

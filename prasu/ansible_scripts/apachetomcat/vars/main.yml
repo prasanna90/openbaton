@@ -1,0 +1,6 @@
+---
+# vars file for apachetomcat
+
+tomcat_pkgs:
+  - lib32z1
+  - lib32ncurses5

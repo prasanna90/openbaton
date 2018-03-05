@@ -1,0 +1,36 @@
+---
+# Downloading Booked Scheduler
+ - block:
+    - name: Download the booked scheduler
+      get_url:
+         url: https://sourceforge.net/projects/phpscheduleit/files/Booked/2.6/booked-2.6.8.zip
+         dest: /root
+      register: r1
+    - name: Install the zip and unzip package
+      apt: name={{ item }} state=installed
+      register: r2
+      with_items:
+         - zip
+         - unzip
+    - name: Unzip the booked.zip file
+      command: chdir=/root unzip booked-2.6.8.zip
+      register: r3
+    - name: copy the unzipped booked file to the lampp path
+      command: sudo cp -rf /root/booked /opt/lampp/htdocs/
+      register: r4
+    - name: Start the LAMMP services
+      command: sudo /opt/lampp/lampp start
+      register: r5
+    - name: check if LAMMP is running
+      command: sudo /opt/lampp/lampp status
+      ignore_errors: yes
+      changed_when: false
+      register: r6
+    - name: Report status of XAMPP
+      fail: 
+        msg: |
+          Service XAMPP is not running.
+      when: r6 | failed
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed

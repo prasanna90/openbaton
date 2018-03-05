@@ -1,0 +1,3 @@
+---
+# tasks file for influxdb
+ - include: install_influxdb.yml

@@ -1,0 +1,4 @@
+---
+# tasks file for activiti
+ - include: install_activiti.yml
+ - include: configure.yml

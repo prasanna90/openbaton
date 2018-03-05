@@ -1,0 +1,13 @@
+---
+# vars file for lamp
+
+php_pkgs:
+  - php-bcmath
+  - php-bz2
+  - php-int1
+  - php-gd
+  - php-mbstring
+  - php-mcrypt
+  - php-mysql
+  - php-zip
+  - libapache2-mod-php

@@ -1,0 +1,5 @@
+---
+# tasks file for ralph
+ - include: install_ralph.yml
+ - include: create_db.yml
+ - include: init_ralph.yml

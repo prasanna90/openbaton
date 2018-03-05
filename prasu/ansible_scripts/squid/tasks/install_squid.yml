@@ -1,0 +1,53 @@
+---
+# Downloading squid
+ - block:
+    - name: Installing squid
+      apt: name=squid state=installed
+      register: r1
+    - name: copy the squid.conf file
+      command: sudo cp /etc/squid/squid.conf /etc/squid/squid.conf.original
+      register: r2
+    - name: Change permissions to the file
+      command: sudo chmod a-w /etc/squid/squid.conf.original
+      register: r3
+    - name: Modify the http_port in the squid.conf
+      lineinfile:
+        dest: /etc/squid/squid.conf.original
+        regexp: '^http_port 3128'
+        line: 'http_port 8888'
+        state: present
+      register: r4
+    - name: Modify the visible_hostname in squid.conf
+      lineinfile:
+        dest: /etc/squid/squid.conf.original
+        regexp: '^visible_hostname weezie'
+        line: 'visible_hostname weezie'
+        state: present
+      register: r5
+    - name: Modify the ACL section in squid.conf
+      blockinfile:
+        dest: "/etc/squid/squid.conf.original"
+        block: |
+         acl fortytwo_network src 192.168.42.0/24
+         http_access allow fortytwo_network
+         acl biz_network src 10.1.42.0/24
+         acl biz_hours time M T W T F 9:00-17:00
+         http_access allow biz_network biz_hours
+      register: r5
+    - name: Start the squid server service
+      command: sudo systemctl restart squid.service
+      register: r6
+    - name: check if squid is running
+      command: service squid status
+      ignore_errors: yes
+      changed_when: false
+      register: r7
+    - name: Report status of squid
+      fail: 
+        msg: |
+          Service squid is not running.
+      when: r7 | failed
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed
+

@@ -1,0 +1,110 @@
+---
+# Downloading Influxdb
+ - block:
+    - name: Import Influxdb apt key
+      apt_key: url=https://repos.influxdata.com/influxdb.key state=present
+      register: r1
+      retries: 2
+      delay: 1
+      until: not r1| success
+      ignore_errors: yes
+    - name: Source the file as root user
+      sudo : no
+      shell: source "/etc/lsb-release"
+      args: 
+        executable: /bin/bash
+      register: r2
+    - name: Add InfluxDB repository
+      apt_repository: repo='deb https://repos.influxdata.com/ubuntu xenial stable' state=present
+      register: r3
+    - name: Update APT package cache
+      apt: update_cache=yes
+      register: r4
+    - name: Install Influxdb
+      apt: name=influxdb state=present
+      register: r5
+    - name: Modify the database in influx conf
+      lineinfile:
+        dest: /etc/influxdb/influxdb.conf
+        regexp: '^  # database = "collectd"'
+        line: '   database = "collectd"'
+        state: present
+      register: r6
+    - name: Modify the bind-address in influx conf
+      lineinfile:
+        dest: /etc/influxdb/influxdb.conf
+        regexp: '^  # bind-address = ":25826"'
+        line: '   bind-address = ":25826"'
+        state: present
+      register: r7
+    - name: Modify the enabled in influx conf
+      lineinfile:
+        dest: /etc/influxdb/influxdb.conf
+        regexp: '^  # enabled = false'
+        line: '   enabled = true'
+        state: present
+      register: r8
+    - name: Modify the retention policy in influx conf
+      lineinfile:
+        dest: /etc/influxdb/influxdb.conf
+        regexp: '^  # retention-policy = ""'
+        line: '   retention-policy = ""'
+        state: present
+      register: r9
+    - name: Modify the typesdb in influx conf
+      lineinfile:
+        dest: /etc/influxdb/influxdb.conf
+        regexp: '^  # typesdb = "/usr/local/share/collectd"'
+        line: '   typesdb = "/usr/local/share/collectd"'
+        state: present
+      register: r10
+    - name: Modify the security level in influx conf
+      lineinfile:
+        dest: /etc/influxdb/influxdb.conf
+        regexp: '^  # security-level = "none"'
+        line: '   security-level = "none"'
+        state: present
+      register: r11
+    - name: Modify the batch size in influx conf
+      lineinfile:
+        dest: /etc/influxdb/influxdb.conf
+        regexp: '^  # batch-size = 5000'
+        line: '   batch-size = 5000'
+        state: present
+      register: r12
+    - name: Modify batch pending in influx conf
+      lineinfile:
+        dest: /etc/influxdb/influxdb.conf
+        regexp: '^  # batch-pending = 10'
+        line: '   batch-pending = 10'
+      register: r13
+    - name: Modify the read buffer in influx conf
+      lineinfile:
+        dest: /etc/influxdb/influxdb.conf
+        regexp: '^  # read-buffer = 0'
+        line: '   read-buffer = 0'
+        state: present
+      register: r14
+    - name: Modify the batch timeout in influx conf
+      lineinfile:
+        dest: /etc/influxdb/influxdb.conf
+        regexp: '^  # batch-timeout = "10s"'
+        line: '   batch-timeout = "10s"'
+        state: present
+      register: r15
+    - name: Start the InfluxDB service
+      service: name=influxdb state=restarted
+      register: r16
+    - name: check if Influxdb is running
+      command: service influxdb status
+      ignore_errors: yes
+      changed_when: false
+      register: r17
+    - name: Report status of influxdb
+      fail: 
+        msg: |
+          Service influxdb is not running.
+      when: r17 | failed
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed or r8|failed or r9|failed or r10|failed or r11|failed or r12|failed or r13|failed or r14|failed or r15|failed or r16|failed or r17|failed

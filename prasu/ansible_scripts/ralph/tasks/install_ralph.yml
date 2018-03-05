@@ -1,0 +1,35 @@
+---
+#APT repository
+ - block:
+    - name: Update APT package cache
+      apt: update_cache=yes
+      register: r1
+    - name: Install apt-transport-https package
+      apt:
+        name: apt-transport-https
+        state: present
+      become: yes
+      register: r2
+    - name: Add apt key for ralph
+      apt_key:
+        keyserver: hkp://keyserver.ubuntu.com:80
+        id: 379CE192D401AB61
+        state: present
+      register: r3
+    - name: Add official ralph APT repository
+      apt_repository:
+        repo: "deb https://dl.bintray.com/vi4m/ralph wheezy main"
+        state: present
+      register: r4
+    - name: Update APT package cache
+      apt: update_cache=yes
+      register: r5
+    - name: Install raplh
+      apt: name={{ item }} state=installed
+      with_items:
+         - ralph-core
+         - redis-server
+      register: r6
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed

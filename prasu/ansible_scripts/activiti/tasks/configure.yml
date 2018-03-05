@@ -1,0 +1,48 @@
+---
+#Configuring the activiti war files
+ - block:
+    - name: Edit the line url  in db.properties of actitivi-rest
+      lineinfile: 
+          dest: /home/tomcat/apache-tomcat-8.5.15/webapps/activiti-rest/WEB-INF/classes/db.properties
+          regexp: "^jdbc.url="
+          line: "jdbc.url=jdbc:mysql://localhost:3306/activiti?autoReconnect=true"
+          backrefs: yes
+      register: r1
+    - name: Edit the line username in db.properties of actitivi-rest
+      lineinfile:
+          dest: /home/tomcat/apache-tomcat-8.5.15/webapps/activiti-rest/WEB-INF/classes/db.properties
+          regexp: "^jdbc.username="
+          line: "jdbc.username=root"
+          backrefs: yes
+      register: r2
+    - name: Edit the line password in db.properties of actitivi-rest
+      lineinfile:
+          dest: /home/tomcat/apache-tomcat-8.5.15/webapps/activiti-rest/WEB-INF/classes/db.properties
+          regexp: "^jdbc.password="
+          line: "jdbc.password=abc123"
+          backrefs: yes
+      register: r3
+    - name: Edit the line url  in db.properties of actitivi-explorer
+      lineinfile:
+          dest: /home/tomcat/apache-tomcat-8.5.15/webapps/activiti-explorer/WEB-INF/classes/db.properties
+          regexp: "^jdbc.url="
+          line: "jdbc.url=jdbc:mysql://localhost:3306/activiti?autoReconnect=true"
+          backrefs: yes
+      register: r4
+    - name: Edit the line username in db.properties of actitivi-explorer
+      lineinfile:
+          dest: /home/tomcat/apache-tomcat-8.5.15/webapps/activiti-explorer/WEB-INF/classes/db.properties
+          regexp: "^jdbc.username="
+          line: "jdbc.username=root"
+          backrefs: yes
+      register: r5
+    - name: Edit the line password in db.properties of actitivi-explorer
+      lineinfile:
+          dest: /home/tomcat/apache-tomcat-8.5.15/webapps/activiti-explorer/WEB-INF/classes/db.properties
+          regexp: "^jdbc.password="
+          line: "jdbc.password=abc123"
+          backrefs: yes
+      register: r6
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed

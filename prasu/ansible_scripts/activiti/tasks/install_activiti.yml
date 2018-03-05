@@ -1,0 +1,38 @@
+---
+#Installing Activiti
+ - block:
+    - name: Download activiti war files
+      get_url:
+         url: https://github.com/Activiti/Activiti/releases/download/activiti-5.22.0/activiti-5.22.0.zip
+         dest: /root
+      register: r1
+    - name: Install the zip and unzip package
+      apt: name={{ item }} state=installed
+      register: r2
+      with_items:
+         - zip
+         - unzip
+    - name: Unzip the activiti.zip file
+      command: chdir=/root unzip activiti-5.22.0.zip
+      register: r3
+    - name: Copy the war files activiti-explorer.war to the tomcat webapps directory
+      command: sudo cp -rf /root/activiti-5.22.0/wars/activiti-explorer.war /home/tomcat/apache-tomcat-8.5.15/webapps/
+      register: r4
+    - name: copy the war files activiti-rest.war to tomcat webaps directory
+      command: sudo cp -rf /root/activiti-5.22.0/wars/activiti-rest.war /home/tomcat/apache-tomcat-8.5.15/webapps/
+      register: r5
+    - name: Create activiti database
+      mysql_db:
+        name: activiti
+        state: present
+      register: r5
+    - name: Stop the Tomcat server(Restart the tomcat service)
+      local_action: command sudo sh /home/tomcat/apache-tomcat-8.5.15/bin/shutdown.sh
+      register: r6
+      ignore_errors: yes
+    - name: Start the Tomcat server
+      local_action: command sudo sh /home/tomcat/apache-tomcat-8.5.15/bin/startup.sh
+      register: r7
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed

@@ -1,0 +1,46 @@
+---
+# Downloading apchetomcat
+ - block:
+    - name: Installing required dependecies
+      apt: name={{ item }} state=installed
+      with_items:
+        - "{{ tomcat_pkgs }}" 
+      register: r1
+    - name: create a new directory for tomcat
+      file: path=/home/tomcat state=directory
+      register: r2
+    - name: Download Apache Tomcat for Linux
+      get_url:
+        url: http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.15/bin/apache-tomcat-8.5.15.tar.gz
+        dest: /root
+      register: r3
+    - name: Extract a zip file that is downloaded in remote machine
+      unarchive:
+        src: /root/apache-tomcat-8.5.15.tar.gz
+        dest: /root
+      register: r4
+    - name: Move extracted directory to apache directory
+      command: mv /root/apache-tomcat-8.5.15  /home/tomcat/
+      register: r5
+    - name: set environment variables
+      template:
+         src: setenv.sh.j2
+         dest: /home/tomcat/apache-tomcat-8.5.15/bin/setenv.sh
+         mode: 0640
+      register: r6
+    - name: Change permissons for tomcat directory
+      file:
+        path: /home/tomcat
+        mode: 0777
+        recurse: yes
+      register: r7
+    - name: Stop the Tomcat server
+      local_action: command sudo sh /home/tomcat/apache-tomcat-8.5.15/bin/shutdown.sh
+      register: r8
+      ignore_errors: yes
+    - name: Start the Tomcat server
+      local_action: command sudo sh /home/tomcat/apache-tomcat-8.5.15/bin/startup.sh      
+      register: r9
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed or r8|failed or r9|failed

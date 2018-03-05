@@ -1,0 +1,26 @@
+---
+#Installing LAMP
+ - block:
+#    - name: Update and upgrade apt packages
+#      apt:
+      #   name: aptitude 
+#         update_cache: yes
+#         upgrade: dist
+#      register: r1
+    - name: Download XAMMP
+      get_url:
+         url: https://www.apachefriends.org/xampp-files/5.6.30/xampp-linux-x64-5.6.30-0-installer.run
+         dest: /root
+      register: r1
+    - name: Set permissions to XAMMP
+      command: chdir=/root chmod 755 xampp-linux-x64-5.6.30-0-installer.run
+      register: r2
+    - name: Install XAMMP
+      command: chdir=/root sudo ./xampp-linux-x64-5.6.30-0-installer.run
+      register: r3
+    - name: Start the XAMMP services
+      command: sudo /opt/lampp/lampp start
+      register: r4
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed

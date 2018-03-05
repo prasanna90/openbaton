@@ -1,0 +1,8 @@
+---
+ - name: Crear contraseña
+   expect:
+     command: passwd root
+     responses:
+      (?i)Enter new UNIX password: "abc123"
+      (?i)Retype new UNIX password: "abc123"
+
