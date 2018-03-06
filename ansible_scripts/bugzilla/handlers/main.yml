@@ -1,0 +1,4 @@
+---
+# handlers file for bugzilla
+ - name: restart apache service
+   service: name=httpd state=restarted

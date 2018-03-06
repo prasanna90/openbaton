@@ -1,0 +1,62 @@
+tosca_definitions_version: tosca_simple_profile_for_nfv_1_0
+description: NSDummy
+
+metadata:
+  ID: dummy-NS1
+  vendor: Fokus
+  version: 0.1
+
+topology_template:
+
+  node_templates:
+
+    dummy-server: 
+        type: openbaton.type.VNF
+        properties:
+          vendor: Fokus
+          version: 0.1
+          endpoint: generic
+          type: server
+          vnfPackageLocation: https://github.com/prasanna90/openbaton.git
+          deploymentFlavour:
+            - flavour_key: m1.small
+        requirements:
+          - virtualLink: internal
+          - vdu: VDU2
+        interfaces:
+          lifecycle:
+            INSTANTIATE:
+               - prasu/Scripts/sample.py
+               - prasu/Scripts/hostname.py
+#               - prasu/Scripts/install_ansible.sh
+               - prasu/Scripts/rootenable.sh
+               - prasu/Scripts/test.sh
+               - prasu/Scripts/test1.sh
+               - prasu/Scripts/configure.sh
+#               - prasu/Scripts/configure_role.sh
+              # - prasu/Scripts/play.py
+
+    VDU2:
+      type: tosca.nodes.nfv.VDU
+      properties:
+        scale_in_out: 2
+        vim_instance_name:
+          - tosca
+      requirements:
+          - virtual_link: CP2
+      artifacts:
+        VDU1Image:
+          type: tosca.artifacts.Deployment.Image.VM
+          file: ubuntu-16
+
+    CP2: #endpoints of VNF2
+      type: tosca.nodes.nfv.CP
+      requirements:
+        - virtualBinding: VDU2
+        - virtualLink: internal
+
+    internal:
+      type: tosca.nodes.nfv.VL
+      properties:
+        vendor: Fokus
+

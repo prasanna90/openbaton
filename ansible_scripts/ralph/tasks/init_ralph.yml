@@ -1,0 +1,16 @@
+---
+#Initialization of ralph
+ - block:
+    - name: Create tables in database
+      local_action: command ralph migrate
+      register: r1
+    - name: To reload the menu
+      local_action: command ralph sitetree_resync_apps
+      register: r2
+    - name: run your ralph instance
+      local_action: command ralph runserver 0.0.0.0:8000
+      ignore_errors: yes
+      register: r3
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed

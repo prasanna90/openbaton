@@ -1,0 +1,7 @@
+---
+# vars file for java
+
+java_pkgs:
+  - lib32z1
+  - lib32ncurses5
+

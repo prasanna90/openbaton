@@ -1,0 +1,5 @@
+---
+# tasks file for grafana
+ - include: install_stable.yml
+ - include: apt_repo.yml
+ - include: package_details.yml

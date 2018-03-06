@@ -1,0 +1,7 @@
+---
+ - hosts: 172.19.77.143
+   roles:
+     - java
+     - apachetomcat
+     - mysql
+     - activiti

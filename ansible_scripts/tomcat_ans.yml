@@ -1,0 +1,5 @@
+---
+ - hosts: 172.19.77.162
+   roles:
+     - java
+     - apachetomcat

@@ -1,0 +1,52 @@
+---
+# Downloading apchetomcat
+ - block:
+    - name: Update APT package cache
+      apt: update_cache=yes 
+      register: r1
+    - name: Install MySQL packages
+      apt: pkg={{item}} state=installed
+      with_items:
+         - python-selinux
+         - python-mysqldb
+         - mysql-server
+      register: r2
+    - name: Remove the MySQL test database
+      action: mysql_db db=test state=absent
+      register: r3
+    - name: configure the MySQL
+      copy:
+       dest: /etc/mysql/my.cnf
+       content: "!ft_min_word_len=2\n!max_allowed_packet=100M"
+      register: r4
+    - name: create database
+      mysql_db:
+        name: db1
+        state: present
+      register: r5
+    - name: update mysql root password for all accounts
+      sudo: yes
+      mysql_user:
+        name: root
+        password: abc123
+        login_user: root
+        login_password: abc123
+        check_implicit_admin: yes
+        priv: "*.*:ALL,GRANT"
+      register: r6
+    - name: start the mysql services
+      service: name=mysql state=started
+      register: r7
+    - name: check if Mysql is running
+      command: service mysql status
+      ignore_errors: yes
+      changed_when: false
+      register: r8
+    - name: Report status of mysql
+      fail: 
+        msg: |
+          Service mysql is not running.
+      when: r8 | failed
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed or r8|failed

@@ -1,0 +1,32 @@
+---
+# Downloading Java
+ - block:
+    - name: Installing required dependecies
+      apt: name={{ item }} state=installed
+      with_items:
+        - "{{ java_pkgs }}"
+      register: r1
+    - name: Add Java repository to sources
+      apt_repository: repo='ppa:webupd8team/java'
+      register: r2
+    - name: Autoaccept license for Java
+      debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+      register: r3
+    - name: Update APT package cache
+      apt: update_cache=yes
+      register: r4
+    - name: Install Java 8
+      apt: name=oracle-java8-installer state=latest install_recommends=yes
+      register: r5
+    - name: Set Java 8 Env
+      apt: name=oracle-java8-set-default state=latest install_recommends=yes
+      register: r6 
+    - name: Set JAVA_HOME if configured (environment setup).
+      template:
+        src: java_home.sh.j2
+        dest: /etc/environment
+        mode: 0640
+      register: r7
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed

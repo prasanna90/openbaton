@@ -1,0 +1,3 @@
+---
+# tasks file for rvm
+ - include: install_rvm.yml

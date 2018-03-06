@@ -1,0 +1,12 @@
+---
+#Installing dependency packages for bugzilla
+ - block:
+   - name: Install all dependency packages
+     apt: name={{ item }} state=installed
+     with_items:
+       - "{{ bugz_pkgs }}"
+     register: r1
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed
+ 

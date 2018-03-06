@@ -1,0 +1,17 @@
+---
+#Installing stable 
+ - block:
+    - name: install stable
+      get_url: 
+         url: https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.6.3_amd64.deb
+         dest: /root
+      register: r1
+    - name: Install adduser libfontconfig
+      command: chdir=/root sudo apt-get install -y adduser libfontconfig
+      register: r2
+    - name: install .deb package
+      command: chdir=/root sudo dpkg -i grafana_4.6.3_amd64.deb
+      register: r3
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed

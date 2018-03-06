@@ -1,0 +1,53 @@
+---
+#APT repository
+ - block:
+    - name: Create a new database with name ralph
+      mysql_db:
+        name: ralph
+        collation: utf8_swedish_ci
+        encoding: utf8
+        state: present
+      register: r1
+    - name: Create a root user for database ralph
+      mysql_user:
+        name: root
+        password: abc123
+        login_user: root
+        login_password: abc123
+        check_implicit_admin: yes
+        priv: "*.*:ALL,GRANT"
+        state: present
+      register: r2
+    - name: Set environment variables for ralph
+      shell: "echo $MY_ENV_VAR1"
+      environment:
+        MY_ENV_VAR1: export DATABASE_NAME=ralph
+      register: r3
+    - name: Set env var for db user
+      shell: "echo $MY_ENV_VAR2"
+      environment:
+        MY_ENV_VAR2: export DATABASE_USER=root
+      register: r4
+    - name: set env var for db password
+      shell: "echo $MY_ENV_VAR3"
+      environment:
+        MY_ENV_VAR3: export DATABASE_PASSWORD=abc123
+      register: r5
+    - name: set env var for db host
+      shell: "echo $MY_ENV_VAR4"
+      environment:
+        MY_ENV_VAR4: export DATABASE_HOST=127.0.0.1
+      register: r6
+    - name: Set env var for ralph path
+      shell: "echo $MY_ENV_VAR5"
+      environment:
+        MY_ENV_VAR5: export PATH=/opt/ralph/ralph-core/bin/:$PATH
+      register: r7
+    - name: Set env var for ralph debug
+      shell: "echo $MY_ENV_VAR6"
+      environment:
+        MY_ENV_VAR6: export RALPH_DEBUG=1
+      register: r8
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed o r5|failed or r6|failed or r7|failed or r8|failed

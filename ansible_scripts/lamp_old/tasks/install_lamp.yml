@@ -1,0 +1,32 @@
+---
+#Installing lamp
+ - block:
+    - name: Install Apache
+      apt: name=apache2 state=installed
+      register: r1
+    - name: Install PHP
+      apt: name=php state=installed
+      register: r2
+    - name: Install all dependency packages for php
+      apt: name={{ item }} state=installed
+      with_items:
+        - "{{ php_pkgs }}"
+      register: r3
+    - name: start Apache
+      service: name=apache2 state=running enabled=yes
+      register: r4
+    - name: Start Mysql Service
+      service: name=mysql state=started enabled=true
+      register: r5
+    - name: Install python Mysql package #required for mysql_db tasks
+      apt: name=python-mysqldb state=present
+      register: r6
+    - name: Install Mysql extension for PHP
+      apt: name=php5-mysql state=present
+      register: r7
+    - name: Restart Apache
+      service: name=apache2 state=restarted
+      register: r8
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed or r8|failed

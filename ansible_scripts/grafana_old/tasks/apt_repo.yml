@@ -1,0 +1,30 @@
+---
+#APT repository
+ - block:
+    - name: Install apt-transport-https package
+      apt:
+        name: apt-transport-https
+        state: present
+      become: yes
+      register: r1
+    - name: Add apt key
+      apt_key:
+        url: https://packagecloud.io/gpg.key
+        state: present
+      become: yes
+      register: r2
+    - name: grafana APT repository
+      apt_repository:
+        repo: "deb https://packagecloud.io/grafana/stable/debian/ jessien main"
+        state: present
+      retries: 2
+      delay: 1
+      register: r3
+      until: not r3| success
+      become: yes
+    - name: Install grafana
+      apt: name=grafana state=installed
+      register: r4
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed

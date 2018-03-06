@@ -1,0 +1,34 @@
+---
+ - block:
+    - name: Installing mysql
+      apt: name={{ item }} state=installed
+      with_items:
+        - "{{ mysql_pkgs }}"
+      register: r1
+    - name: configure the MySQL
+      copy:
+       dest: /etc/mysql/my.cnf
+       content: "!ft_min_word_len=2\n!max_allowed_packet=100M"
+      register: r2
+    - name: start the mysql services
+      service: name=mysql state=started
+      register: r3
+    - name: update mysql root password for all accounts
+      sudo: yes
+      mysql_user: 
+        name: bugs
+        password: "{{ mysql_root_password }}"
+        login_user: bugs
+        login_password: "{{ mysql_root_password }}"
+        check_implicit_admin: yes
+        priv: "*.*:ALL,GRANT"
+      register: r4
+    - name: create database
+      mysql_db:
+        name: bugs
+        state: present
+      register: r5
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed
+

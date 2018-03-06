@@ -1,0 +1,37 @@
+---
+#Checking if package details are present
+ - block:
+    - name: check if binary is present
+      stat:
+        path: /usr/sbin/grafana-server
+      register: r1
+    - name: check if init.d file is present
+      stat:
+        path: /etc/init.d/grafana-server
+      register: r2
+    - name: check if environment vars (default) file is present
+      stat:
+        path: /etc/default/grafana-server
+      register: r3
+    - name: check if configuration file is present
+      stat:
+        path: /etc/grafana/grafana.ini
+      register: r4
+    - name: check if default configuration log file is present
+      stat:
+        path: /var/log/grafana/grafana.log
+      register: r5
+    - name: check if sqlite3 db is present
+      stat:
+        path: /var/lib/grafana/grafana.db
+      register: r6
+    - name: check if HTML/JS/CSS and other Grafana files are present
+      stat:
+        path: /usr/share/grafana
+      register: r7
+    - name: Start the grafana server
+      service: name=grafana-server state=started
+      register: r8
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed or r5|failed or r6|failed or r7|failed or r8|failed

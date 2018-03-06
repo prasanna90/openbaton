@@ -1,0 +1,22 @@
+---
+#Configuring httpd.conf and sending sample html file
+ - block:
+    - name: Go to the bugzilla directory
+      command: chdir=/var/www/html/bugzilla ls 
+      register: r1
+    - name: Test server
+      command: chdir=/var/www/html/bugzilla ./testserver.pl http://localhost/bugzilla
+      register: r2
+    - name: Install lynx package
+      apt:
+       name: lynx
+       state: latest
+      register: r3
+    - name: Access via web browser
+      command: chdir=/var/www/html/bugzilla lynx http://localhost/bugzilla
+      with_items:
+         - Y
+      register: r4
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed or r2|failed or r3|failed or r4|failed

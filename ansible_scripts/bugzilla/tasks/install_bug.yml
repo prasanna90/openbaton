@@ -1,0 +1,11 @@
+---
+#Downloading Bugzillapackage
+ - block:
+    - name: download bugzilla
+      command: chdir=/var/www/html git clone --branch release-5.0-stable https://github.com/bugzilla/bugzilla bugzilla
+      register: r1
+ - name: Test previous block
+   fail: msg="Previous block failed"
+   when: r1|failed
+
+
